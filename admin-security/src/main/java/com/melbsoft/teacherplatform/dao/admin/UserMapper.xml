@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melbsoft.teacherplatform.dao.admin.UserMapper">
+
+
+    <select id="findUser" resultType="SysUser">
+        SELECT
+        user_id as userID,
+        login_name as loginName,
+        login_pwd as password
+        FROM
+        sys_user
+        WHERE
+        login_name=#{userName}
+    </select>
+</mapper>
