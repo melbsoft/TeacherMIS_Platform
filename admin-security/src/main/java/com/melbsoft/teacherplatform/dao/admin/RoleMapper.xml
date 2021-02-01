@@ -3,13 +3,14 @@
 <mapper namespace="com.melbsoft.teacherplatform.dao.admin.RoleMapper">
 
 
-    <select id="listRolesByUserID" resultType="String">
+    <select id="listRolesByUserID" resultType="SysRole">
         SELECT
-        role_name
+            r.role_id as roleId,
+            r.role_name as roleName
         FROM
-        sys_ua ua,sys_role r
+            sys_ua ua,sys_role r
         WHERE
-        ua.role_id=r.role_id AND
-        ua.user_id=#{userID}
+            ua.role_id=r.role_id AND
+            ua.user_id=#{userID}
     </select>
 </mapper>

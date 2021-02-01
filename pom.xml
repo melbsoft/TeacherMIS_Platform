@@ -122,6 +122,12 @@
 				<version>4.0.14</version>
 				<scope>runtime</scope>
 			</dependency>
+			<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>8.0.22</version>
+			</dependency>
 
 			<dependency>
 				<groupId>com.melbsoft</groupId>
@@ -135,8 +141,19 @@
 		</dependencies>
 	</dependencyManagement>
 
-
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

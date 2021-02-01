@@ -5,12 +5,12 @@
 
     <select id="findUser" resultType="SysUser">
         SELECT
-        user_id as userID,
-        login_name as loginName,
-        login_pwd as password
+            user_id as userID,
+            login_name as loginName,
+            login_pwd as password
         FROM
-        sys_user
+            sys_user
         WHERE
-        login_name=#{userName}
+            login_name=#{userName}
     </select>
 </mapper>

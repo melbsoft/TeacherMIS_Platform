@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin")
-@PreAuthorize("hasRole('ADMIN')")
+//@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
-
+    @PreAuthorize("hasPermission('4:org', 'auth')")
     @RequestMapping(value = "auth", method = RequestMethod.GET)
     public ResultMessage<Boolean> auth() throws MessageException {
         return ResultMessage.SUCCESS;

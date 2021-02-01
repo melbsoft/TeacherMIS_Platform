@@ -2,6 +2,7 @@ package com.melbsoft.teacherplatform.service.admin;
 
 import com.melbsoft.teacherplatform.dao.admin.RoleMapper;
 import com.melbsoft.teacherplatform.dao.admin.UserMapper;
+import com.melbsoft.teacherplatform.model.admin.SysRole;
 import com.melbsoft.teacherplatform.model.admin.SysUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
@@ -23,15 +24,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         SysUser detail = userMapper.findUser(username);
-        log.info("username {} detail {}",username,detail);
+        log.info("username {} detail {}", username, detail);
         if (detail != null) {
             User.UserBuilder builder = User.builder()
                     .username(detail.getLoginName())
                     .password(detail.getPassword())
-                    .roles(roleMapper.listRolesByUserID(detail.getUserID())
-                            .toArray(new String[0]));
+                    .authorities(roleMapper.listRolesByUserID(detail.getUserID())
+                            .toArray(new SysRole[0]));
             return builder.build();
         }
-        throw new UsernameNotFoundException(String.format("username not found %s",username));
+        throw new UsernameNotFoundException(String.format("username not found %s", username));
     }
 }
