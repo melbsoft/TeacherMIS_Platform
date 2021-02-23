@@ -62,9 +62,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .cors().and()
-                .csrf().disable()
                 .csrf(csrf -> {
-                            csrf
+                            csrf.ignoringAntMatchers("/login")
                                     .csrfTokenRepository(
                                             CookieCsrfTokenRepository.withHttpOnlyFalse()
                                     );
