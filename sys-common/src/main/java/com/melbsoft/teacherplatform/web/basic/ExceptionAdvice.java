@@ -1,5 +1,7 @@
 package com.melbsoft.teacherplatform.web.basic;
 
+import com.melbsoft.teacherplatform.web.exception.FailOperationException;
+import com.melbsoft.teacherplatform.web.exception.InvalidInputException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
@@ -7,6 +9,7 @@ import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -49,11 +52,12 @@ public class ExceptionAdvice {
             HttpMediaTypeNotSupportedException.class,
             HttpMediaTypeNotAcceptableException.class,
             MissingPathVariableException.class,
-            NoHandlerFoundException.class})
+            NoHandlerFoundException.class,
+            InvalidInputException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ResultMessage parameterExceptionHandler(WebRequest request, Exception e) {
-        logger.warn("invalid params! {} ", request, e);
+        logger.warn("invalid request! {} ", request, e);
         return ResultMessage.INVALID;
     }
 
@@ -69,18 +73,26 @@ public class ExceptionAdvice {
         return ResultMessage.INVALID;
     }
 
-    @ExceptionHandler(MessageException.class)
-    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
     @ResponseBody
-    public ResultMessage sysErrorHandler(WebRequest request, Throwable e) {
+    public ResultMessage accessDenyHandler(WebRequest request, Throwable e) {
         logger.error("message process error! {} ", request, e);
-        return ResultMessage.ERROR;
+        return ResultMessage.UN_AUTH;
+    }
+
+
+    @ExceptionHandler(FailOperationException.class)
+    @ResponseStatus(code = HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ResultMessage sysErrorHandler(WebRequest request, FailOperationException e) {
+        logger.error("message process error! {} ", request, e);
+        return ResultMessage.fail(e.getMessage());
     }
 
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-
     public ResultMessage globalHandler(WebRequest request, Throwable e) {
         logger.error("system error! {} ", request, e);
         return ResultMessage.ERROR;

@@ -13,4 +13,27 @@
         WHERE
             login_name=#{userName}
     </select>
+
+    <update id="updatePass">
+        UPDATE
+            sys_user
+        SET
+            login_pwd=#{newPass}
+        WHERE
+            login_name=#{userName} AND
+            login_pwd=#{oldPass}
+    </update>
+    <insert id="insertUser">
+        INSERT INTO
+            sys_user (login_name, login_pwd,user_display)
+         VALUES (#{userName},#{encodedPass},#{userDisplay})
+    </insert>
+    <select id="loadPass" resultType="string">
+        SELECT
+            login_pwd
+        FROM
+            sys_user
+        WHERE
+            login_name=#{userName}
+    </select>
 </mapper>

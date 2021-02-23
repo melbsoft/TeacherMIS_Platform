@@ -1,4 +1,4 @@
-package com.melbsoft.teacherplatform.config.security;
+package com.melbsoft.teacherplatform.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -19,7 +19,7 @@ import java.sql.SQLException;
 @Configuration
 @MapperScan(value = "com.melbsoft.teacherplatform.dao.admin", sqlSessionFactoryRef = "adminSqlSessionFactory")
 @Slf4j
-public class AdminDBconfig {
+public class AdminDBConfig {
 
     @Bean
     @Primary

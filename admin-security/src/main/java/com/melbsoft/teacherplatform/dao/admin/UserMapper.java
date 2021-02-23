@@ -8,4 +8,10 @@ import org.apache.ibatis.annotations.Param;
 public interface UserMapper {
 
     SysUser findUser(@Param("userName") String userName);
+
+    int updatePass(@Param("userName") String username, @Param("oldPass") String oldPass, @Param("newPass") String newPass);
+
+    int insertUser(@Param("userName") String userName, @Param("encodedPass") String encodedPass, @Param("userDisplay") String userDisplay);
+
+    String loadPass(@Param("userName") String username);
 }

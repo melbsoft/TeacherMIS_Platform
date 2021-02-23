@@ -5,14 +5,17 @@
 
     <select id="findPermissions" resultType="Integer">
         SELECT
-            count(*)
+        count(*)
         FROM
-            sys_permission p,sys_rp rp
+        sys_permission p,sys_rp rp
         WHERE
-            rp.role_id=#{roleId} AND
-            rp.permission_id=p.permission_id AND
-            p.resource_type=#{targetType} AND
-            P.rescouce_id=#{targetId} AND
-            P.privilege=#{permission}
+        rp.role_id=#{roleId} AND
+        rp.permission_id=p.permission_id AND
+        p.resource_id in
+        <foreach item="item" index="index" collection="resources"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach> AND
+        P.privilege=#{permission}
     </select>
 </mapper>

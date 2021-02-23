@@ -6,7 +6,8 @@
     <select id="listRolesByUserID" resultType="SysRole">
         SELECT
             r.role_id as roleId,
-            r.role_name as roleName
+            r.role_name as roleName,
+            r.role_display as roleDisplay
         FROM
             sys_ua ua,sys_role r
         WHERE

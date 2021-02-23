@@ -10,4 +10,6 @@ import java.util.List;
 public interface RoleMapper {
 
     List<SysRole> listRolesByUserID(@Param("userID") long userID);
+
+    List<SysRole> listRolesByUserName(@Param("username") String username);
 }
