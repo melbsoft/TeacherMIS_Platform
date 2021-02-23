@@ -25,8 +25,8 @@ echo "process killing done"
 
 
 
-PATH=$PATH:$HOME/bin
 
-nohup java -jar admin-security/target/admin-security-1.0.0-SNAPSHOT.jar >output 2>&1 &
+nohup echo 'nohup run'
+#nohup java -jar admin-security/target/admin-security-1.0.0-SNAPSHOT.jar >output 2>&1 &
 #java -jar admin-security/target/admin-security-1.0.0-SNAPSHOT.jar
 echo "process started"
