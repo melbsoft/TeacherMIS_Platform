@@ -2,7 +2,7 @@
 <Configuration>
     <Properties>
         <Property name="LOG_PATTERN">%style{%d{yyyy-MM-dd HH:mm:ss.SSS}}{gray} %highlight{%-5p }%style{%c{1.}}{bright,yellow} %m%n%throwable</Property>
-        <Property name="APP_NAME">opay-risk-sensor</Property>
+        <Property name="APP_NAME">teacher-platform</Property>
         <Property name="ROOT_DIR">logs</Property>
     </Properties>
     <Appenders>
