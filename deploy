@@ -5,12 +5,13 @@ echo 'list evn'
 export
 echo '----------------'
 
-PROCESS_COUNT=$(ps aux|grep $TOMCAT_ADDR|grep -v grep|wc -l)
-
+PROCESS_COUNT=$(ps aux|grep $deploy_package_name|grep -v grep|wc -l)
+echo '--PROCESS_COUNT-----'
+echo $PROCESS_COUNT
 
 if [ $PROCESS_COUNT -gt 0 ]; then
 
-PROCESS_LIST=$(ps aux | grep java | grep $TOMCAT_ADDR|awk '{print $2}')
+PROCESS_LIST=$(ps aux | grep java | grep $deploy_package_name|awk '{print $2}')
 echo "FOUND TOMCAT PROCESS LIST: ${PROCESS_LIST}"
 for id in $PROCESS_LIST
 do
@@ -22,4 +23,4 @@ fi
 sleep 5s
 echo "process killing done"
 
-nohup java -jar admin-security/target/admin-security-1.0.0-SNAPSHOT.jar 2>&1 &
+nohup java -jar admin-security/target/$deploy_package_name 2>&1 &
