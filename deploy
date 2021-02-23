@@ -27,5 +27,5 @@ echo "process killing done"
 
 
 nohup echo 'nohup run'
-#nohup java -jar admin-security/target/admin-security-1.0.0-SNAPSHOT.jar >/dev/null 2>&1 &
+nohup java -jar admin-security/target/admin-security-1.0.0-SNAPSHOT.jar >/dev/null 2>&1 &
 echo "process started"
