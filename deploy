@@ -1,0 +1,21 @@
+echo 'start deploy'
+pwd
+
+PROCESS_COUNT=\$(ps aux|grep $TOMCAT_ADDR|grep -v grep|wc -l)
+
+
+if [ \$PROCESS_COUNT -gt 0 ]; then
+
+PROCESS_LIST=\$(ps aux | grep java | grep $TOMCAT_ADDR|awk '{print \$2}')
+echo "FOUND TOMCAT PROCESS LIST: \${PROCESS_LIST}"
+for id in \$PROCESS_LIST
+do
+        echo "killed \${id}"
+	kill -9 \$id
+done
+fi
+
+sleep 5s
+echo "process killing done"
+
+java -jar admin-security/target/admin-security-1.0.0-SNAPSHOT.jar
