@@ -23,7 +23,9 @@ fi
 sleep 5s
 echo "process killing done"
 
-
+nohup java -jar admin-security/target/$deploy_package_name >/dev/null 2>&1 &
+sleep 5s
+echo 'process start'
 
 
 
