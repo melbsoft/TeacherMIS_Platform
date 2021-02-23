@@ -25,6 +25,6 @@ echo "process killing done"
 
 
 BUILD_ID=dontKillMe nohup java -jar admin-security/target/$deploy_package_name >output 2>&1 &
-
+echo "process start"
 
 
