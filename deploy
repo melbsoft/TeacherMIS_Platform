@@ -20,7 +20,6 @@ do
 	kill -9 $id
 done
 fi
-
 sleep 5s
 echo "process killing done"
 
