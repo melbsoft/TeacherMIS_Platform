@@ -25,6 +25,6 @@ echo "process killing done"
 
 
 source /etc/profile
-nohup java -jar admin-security/target/admin-security-1.0.0-SNAPSHOT.jar >output 2>&1 &
-
+# nohup java -jar admin-security/target/admin-security-1.0.0-SNAPSHOT.jar >output 2>&1 &
+java -jar admin-security/target/admin-security-1.0.0-SNAPSHOT.jar
 echo "process started"
