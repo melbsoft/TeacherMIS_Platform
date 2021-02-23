@@ -1,5 +1,9 @@
-echo 'start deploy'
+echo 'start deploy pwd'
 pwd
+echo '----------------'
+echo 'list evn'
+export
+echo '----------------'
 
 PROCESS_COUNT=$(ps aux|grep $TOMCAT_ADDR|grep -v grep|wc -l)
 
@@ -18,4 +22,4 @@ fi
 sleep 5s
 echo "process killing done"
 
-java -jar admin-security/target/admin-security-1.0.0-SNAPSHOT.jar
+nohup java -jar admin-security/target/admin-security-1.0.0-SNAPSHOT.jar 2>&1 &
