@@ -30,8 +30,7 @@ public class RBACUserDetailsService implements UserDetailsService {
                 User.UserBuilder builder = User.builder()
                         .username(sysUser.getLoginName())
                         .password(sysUser.getPassword())
-                        .authorities(roleMapper.listRolesByUserID(sysUser.getUserID())
-                                .toArray(new SysRole[0]));
+                        .authorities(roleMapper.listRolesByUserID(sysUser.getUserID()).toArray(new SysRole[0]));
                 return builder.build();
             }
         } catch (Throwable e) {

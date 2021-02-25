@@ -63,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
         http
                 .cors().and()
                 .csrf(csrf -> {
-                            csrf.ignoringAntMatchers("/login")
+                            csrf
                                     .csrfTokenRepository(
                                             CookieCsrfTokenRepository.withHttpOnlyFalse()
                                     );
@@ -104,12 +104,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                     }
                 })
                 .sessionConcurrency(c -> {
-                    c.maximumSessions(1)
-                            .expiredSessionStrategy(expire -> {
-                                HttpServletResponse resp = expire.getResponse();
-                                InvalidResponse(resp);
-                            });
-                })
+            c.maximumSessions(1)
+                    .expiredSessionStrategy(expire -> {
+                        HttpServletResponse resp = expire.getResponse();
+                        InvalidResponse(resp);
+                    });
+        })
                 .and()
                 .rememberMe(rememberMe -> {
                     rememberMe
@@ -125,7 +125,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                 )
                 .exceptionHandling(handler -> {
                     handler.accessDeniedHandler((req, resp, e) -> {
-                        log.info("拒绝访问");
+                        log.error("拒绝访问",e);
                         InvalidResponse(resp);
                     });
                 })

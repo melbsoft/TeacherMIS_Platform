@@ -20,6 +20,7 @@ public class HazelcastConfig {
     @Bean
     public HazelcastInstance hazelcastInstance() {
         Config config = new Config();
+        config.setInstanceName("sys memory");
         MapAttributeConfig attributeConfig = new MapAttributeConfig()
                 .setName(HazelcastIndexedSessionRepository.PRINCIPAL_NAME_ATTRIBUTE)
                 .setExtractor(PrincipalNameExtractor.class.getName());
@@ -29,7 +30,7 @@ public class HazelcastConfig {
         config.addMapConfig(
                 new MapConfig()
                         .setName("instruments")
-                        .setMaxSizeConfig(new MaxSizeConfig(200, MaxSizeConfig.MaxSizePolicy.FREE_HEAP_SIZE))
+                        .setMaxSizeConfig(new MaxSizeConfig(384, MaxSizeConfig.MaxSizePolicy.FREE_HEAP_SIZE))
                         .setEvictionPolicy(EvictionPolicy.LRU)
                         .setTimeToLiveSeconds(20000));
         return Hazelcast.newHazelcastInstance(config);

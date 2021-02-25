@@ -68,12 +68,10 @@ public class SysUserController {
                     })
 
             })
-    ResultMessage<Boolean> changePassword(
-            @Pattern(regexp = "\\w{6,}")
+    ResultMessage<Boolean> changePassword(  //@Pattern(regexp = "\\w{6,}")
             @Parameter(name = "旧密码", example = "_pass")
             @RequestParam("old")
-                    String oldPass,
-            @Pattern(regexp = "\\w{6,}")
+                    String oldPass,// @Pattern(regexp = "\\w{6,}"
             @Parameter(name = "新密码", example = "new_pass")
             @RequestParam("new")
                     String newPass) {

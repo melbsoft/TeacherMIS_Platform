@@ -32,12 +32,15 @@
         </Root>
         <Logger name="org.springframework" additivity="false">
             <AppenderRef ref="RollingFileInfo"/>
+            <AppenderRef ref="Console"/>
         </Logger>
         <Logger name="org.mybatis" additivity="false">
             <AppenderRef ref="RollingFileInfo"/>
+            <AppenderRef ref="Console"/>
         </Logger>
         <Logger name="com.melbsoft.teacherplatform" additivity="false">
             <AppenderRef ref="RollingFileInfo"/>
+            <AppenderRef ref="Console"/>
         </Logger>
     </Loggers>
 
