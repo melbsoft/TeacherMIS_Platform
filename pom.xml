@@ -19,6 +19,7 @@
     <modules>
         <module>admin-security</module>
         <module>sys-common</module>
+        <module>teacher-core</module>
     </modules>
 
     <properties>
