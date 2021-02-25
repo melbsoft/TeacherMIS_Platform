@@ -1,5 +1,17 @@
 # TeacherMIS_Platform
-http://localhost:8080/swagger-ui/
+
+
+jenkins
+http://47.92.240.50:18089/
 
 webhook
 http://47.92.240.50:18089/github-webhook/
+
+project Demo
+http://47.92.240.50:8080/
+
+swagger-ui
+http://47.92.240.50:8080/swagger-ui/
+
+
+
