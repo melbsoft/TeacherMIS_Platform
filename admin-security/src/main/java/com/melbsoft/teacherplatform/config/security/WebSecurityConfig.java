@@ -63,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
         http
                 .cors().and()
                 .csrf(csrf -> {
-                            csrf
+                            csrf.ignoringAntMatchers("/token")
                                     .csrfTokenRepository(
                                             CookieCsrfTokenRepository.withHttpOnlyFalse()
                                     );
@@ -120,12 +120,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                 .authorizeRequests(authorize -> {
                             authorize
                                     .antMatchers("/swagger-ui/**").permitAll()
+                                    .antMatchers("/token").permitAll()
                                     .anyRequest().authenticated();
                         }
                 )
                 .exceptionHandling(handler -> {
                     handler.authenticationEntryPoint((req, resp, e) -> {
                         log.error("授权失效", e);
+                        resp.addHeader("WWW-Authenticate", "Basic realm=\".\"");
                         unAuthorizeResponse(resp);
                     });
                     handler.accessDeniedHandler((req, resp, e) -> {

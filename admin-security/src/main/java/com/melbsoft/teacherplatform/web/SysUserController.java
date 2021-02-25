@@ -6,7 +6,6 @@ import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
@@ -26,9 +25,9 @@ public class SysUserController {
     @Operation(summary = "用户信息查询",
             description = "获取当前登录用户信息",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "用户信息", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = UserDetails.class))
-                    })
+                    @ApiResponse(responseCode = "200", description = "操作成功",
+                            content = {@Content(mediaType = "application/json")}
+                    )
             })
     @GetMapping("/info")
     ResultMessage<UserDetails> info() {
@@ -40,13 +39,13 @@ public class SysUserController {
     @Operation(summary = "创建新用户",
             description = "基于用户名与默认密码创建新用户",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "操作成功", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = Boolean.class))
-                    })
-
+                    @ApiResponse(responseCode = "200", description = "操作成功",
+                            content = {@Content(mediaType = "application/json")}
+                    )
             })
+
     @PostMapping("/create")
-    ResultMessage<Boolean> create(
+    ResultMessage<Void> create(
             @Parameter(name = "登录名", example = "admin")
             @RequestParam("loginName")
                     String loginName,
@@ -65,18 +64,17 @@ public class SysUserController {
     @Operation(summary = "用户密码修改",
             description = "核对旧密码并设置新的用户密码",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "操作成功", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = Boolean.class))
-                    })
-
+                    @ApiResponse(responseCode = "200", description = "操作成功",
+                            content = {@Content(mediaType = "application/json")}
+                    )
             })
-    ResultMessage<Boolean> changePassword(  //@Pattern(regexp = "\\w{6,}")
-                                            @Parameter(name = "旧密码", example = "_pass")
-                                            @RequestParam("old")
-                                                    String oldPass,// @Pattern(regexp = "\\w{6,}"
-                                            @Parameter(name = "新密码", example = "new_pass")
-                                            @RequestParam("new")
-                                                    String newPass) {
+    ResultMessage<Void> changePassword(  //@Pattern(regexp = "\\w{6,}")
+                                         @Parameter(name = "旧密码", example = "_pass")
+                                         @RequestParam("old")
+                                                 String oldPass,// @Pattern(regexp = "\\w{6,}"
+                                         @Parameter(name = "新密码", example = "new_pass")
+                                         @RequestParam("new")
+                                                 String newPass) {
         boolean success = sysUserService.changePass(oldPass, newPass);
         if (success) {
             return ResultMessage.SUCCESS;

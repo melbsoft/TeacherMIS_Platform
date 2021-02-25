@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.builders.RequestParameterBuilder;
 import springfox.documentation.builders.ResponseBuilder;
@@ -64,6 +63,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.OAS_30)
                 .enable(true)
                 .apiInfo(apiInfo())
+                .produces(Collections.singleton(MediaType.APPLICATION_JSON_VALUE))
                 .globalResponses(HttpMethod.GET, responses)
                 .globalResponses(HttpMethod.POST, responses)
                 .globalResponses(HttpMethod.PUT, responses)
@@ -74,9 +74,9 @@ public class SwaggerConfig {
                                 .build()))
                 .select()
                 .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.any())
-
-
+                .paths((String input) -> {
+                    return !input.matches("/error.*");
+                })
                 .build();
     }
 
