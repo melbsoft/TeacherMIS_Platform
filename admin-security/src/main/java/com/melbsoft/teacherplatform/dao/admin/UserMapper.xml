@@ -24,7 +24,7 @@
             login_pwd=#{oldPass}
     </update>
     <insert id="insertUser">
-        INSERT INTO
+        INSERT IGNORE INTO
             sys_user (login_name, login_pwd,user_display)
          VALUES (#{userName},#{encodedPass},#{userDisplay})
     </insert>
