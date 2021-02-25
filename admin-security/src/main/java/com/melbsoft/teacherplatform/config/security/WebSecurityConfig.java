@@ -40,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     BaseLdapPathContextSource contextSource;
     @Resource
     DataSource datasourceAdmin;
-    private String INVALID_RESP = "";
+    private String UNAUTH_RESP = "";
     @Resource
     private ObjectMapper objectMapper;
     @Resource
@@ -48,15 +48,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        INVALID_RESP = objectMapper.writeValueAsString(ResultMessage.INVALID);
+        UNAUTH_RESP = objectMapper.writeValueAsString(ResultMessage.UN_AUTH);
     }
 
-    private void InvalidResponse(HttpServletResponse resp) throws IOException {
+
+    private void unAuthorizeResponse(HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json;charset=UTF-8");
         resp.setStatus(HttpStatus.UNAUTHORIZED.value());
-        resp.getWriter().write(INVALID_RESP);
+        resp.getWriter().write(UNAUTH_RESP);
     }
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -80,7 +80,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                             })
                             .failureHandler((req, resp, auth) -> {
                                 log.info("登录验证失败");
-                                InvalidResponse(resp);
+                                unAuthorizeResponse(resp);
                             })
                             .permitAll();
                 })
@@ -89,7 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                             .logoutSuccessHandler((req, resp, auth) -> {
                                 log.info("退出成功");
                                 resp.setContentType("application/json;charset=UTF-8");
-                                resp.getWriter().write(objectMapper.writeValueAsString(auth));
+                                resp.getWriter().write(objectMapper.writeValueAsString(ResultMessage.success(auth)));
                             })
                             .invalidateHttpSession(true)
                             .clearAuthentication(true)
@@ -100,16 +100,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                     @Override
                     public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse resp) throws IOException, ServletException {
                         request.getSession();
-                        InvalidResponse(resp);
+                        unAuthorizeResponse(resp);
                     }
                 })
                 .sessionConcurrency(c -> {
-            c.maximumSessions(1)
-                    .expiredSessionStrategy(expire -> {
-                        HttpServletResponse resp = expire.getResponse();
-                        InvalidResponse(resp);
-                    });
-        })
+                    c.maximumSessions(1)
+                            .expiredSessionStrategy(expire -> {
+                                HttpServletResponse resp = expire.getResponse();
+                                unAuthorizeResponse(resp);
+                            });
+                })
                 .and()
                 .rememberMe(rememberMe -> {
                     rememberMe
@@ -124,9 +124,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                         }
                 )
                 .exceptionHandling(handler -> {
+                    handler.authenticationEntryPoint((req, resp, e) -> {
+                        log.error("授权失效", e);
+                        unAuthorizeResponse(resp);
+                    });
                     handler.accessDeniedHandler((req, resp, e) -> {
-                        log.error("拒绝访问",e);
-                        InvalidResponse(resp);
+                        log.error("拒绝访问", e);
+                        unAuthorizeResponse(resp);
                     });
                 })
                 .httpBasic();

@@ -1,6 +1,6 @@
 package com.melbsoft.teacherplatform.web.basic;
 
-import com.melbsoft.teacherplatform.web.exception.FailOperationException;
+import com.melbsoft.teacherplatform.web.exception.ForbiddenException;
 import com.melbsoft.teacherplatform.web.exception.InvalidInputException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +56,7 @@ public class ExceptionAdvice {
             InvalidInputException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResultMessage parameterExceptionHandler(WebRequest request, Exception e) {
+    public ResultMessage badRequestHandler(WebRequest request, Exception e) {
         logger.warn("invalid request! {} ", request, e);
         return ResultMessage.INVALID;
     }
@@ -64,7 +64,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResultMessage handleValidationException(ConstraintViolationException e) {
+    public ResultMessage validationHandler(ConstraintViolationException e) {
         StringBuilder detail = new StringBuilder();
         for (ConstraintViolation<?> s : e.getConstraintViolations()) {
             detail.append(s.getMessage()).append(";");
@@ -73,7 +73,8 @@ public class ExceptionAdvice {
         return ResultMessage.INVALID;
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
+    @ExceptionHandler(value = {AccessDeniedException.class
+    })
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
     @ResponseBody
     public ResultMessage accessDenyHandler(WebRequest request, Throwable e) {
@@ -82,12 +83,12 @@ public class ExceptionAdvice {
     }
 
 
-    @ExceptionHandler(FailOperationException.class)
+    @ExceptionHandler(ForbiddenException.class)
     @ResponseStatus(code = HttpStatus.FORBIDDEN)
     @ResponseBody
-    public ResultMessage sysErrorHandler(WebRequest request, FailOperationException e) {
+    public ResultMessage sysErrorHandler(WebRequest request, ForbiddenException e) {
         logger.error("message process error! {} ", request, e);
-        return ResultMessage.fail(e.getMessage());
+        return ResultMessage.FORBIDDEN;
     }
 
     @ExceptionHandler(Throwable.class)

@@ -26,8 +26,8 @@ public class SysUserService {
     }
 
     public boolean changePass(String oldPass, String newPass) {
-        if(oldPass.equals(newPass))
-            throw new InvalidInputException("can not change password to current one");
+        if (oldPass.equals(newPass))
+            throw new InvalidInputException("unchanged password!");
         int updates = 0;
         UserDetails user = SecurityHelper.getUserDetails();
         String currentPass = userMapper.loadPass(user.getUsername());

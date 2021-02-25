@@ -13,8 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 
 @RestController
 @RequestMapping("/sysuser")
@@ -56,7 +54,11 @@ public class SysUserController {
             @RequestParam("userDisplay")
                     String userDisplay) {
         boolean success = sysUserService.create(loginName, userDisplay);
-        return ResultMessage.success(success);
+        if (success) {
+            return ResultMessage.SUCCESS;
+        } else {
+            return ResultMessage.fail("user exists!");
+        }
     }
 
     @PutMapping("/password")
@@ -69,14 +71,18 @@ public class SysUserController {
 
             })
     ResultMessage<Boolean> changePassword(  //@Pattern(regexp = "\\w{6,}")
-            @Parameter(name = "旧密码", example = "_pass")
-            @RequestParam("old")
-                    String oldPass,// @Pattern(regexp = "\\w{6,}"
-            @Parameter(name = "新密码", example = "new_pass")
-            @RequestParam("new")
-                    String newPass) {
+                                            @Parameter(name = "旧密码", example = "_pass")
+                                            @RequestParam("old")
+                                                    String oldPass,// @Pattern(regexp = "\\w{6,}"
+                                            @Parameter(name = "新密码", example = "new_pass")
+                                            @RequestParam("new")
+                                                    String newPass) {
         boolean success = sysUserService.changePass(oldPass, newPass);
-        return ResultMessage.success(success);
+        if (success) {
+            return ResultMessage.SUCCESS;
+        } else {
+            return ResultMessage.fail("password can not be done!");
+        }
     }
 
 }

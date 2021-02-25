@@ -6,6 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.builders.RequestParameterBuilder;
 import springfox.documentation.builders.ResponseBuilder;
 import springfox.documentation.oas.annotations.EnableOpenApi;
 import springfox.documentation.schema.Example;
@@ -22,14 +23,39 @@ import java.util.List;
 @Configuration
 @EnableOpenApi
 public class SwaggerConfig {
+
     List<Response> responses = new ArrayList<Response>() {{
-        Example example=new Example("1","无效请求","请求内容无效时返回","{\n" +
+
+        Example badRequestExample = new Example("无效请求", "无效请求", "请求内容无效时返回", "{\n" +
                 "    \"code\": \"00001\",\n" +
                 "    \"message\": \"INVALID REQUEST\"\n" +
-                "}","暂无", MediaType.APPLICATION_JSON_VALUE);
-        add(new ResponseBuilder().code("400").description("无效请求").examples(Collections.singletonList(example)).build());
-        add(new ResponseBuilder().code("401").description("请求未授权").build());
-        add(new ResponseBuilder().code("500").description("服务器异常").build());
+                "}", "暂无", MediaType.APPLICATION_JSON_VALUE);
+        Example unAuthorizeExample = new Example("无效请求", "无效请求", "请求内容无效时返回", "{\n" +
+                "    \"code\": \"00002\",\n" +
+                "    \"message\": \"UNAUTHORIZED\"\n" +
+                "}", "暂无", MediaType.APPLICATION_JSON_VALUE);
+        Example sysErrorExample = new Example("无效请求", "无效请求", "请求内容无效时返回", "{\n" +
+                "    \"code\": \"00003\",\n" +
+                "    \"message\": \"SYSTEM ERROR\"\n" +
+                "}", "暂无", MediaType.APPLICATION_JSON_VALUE);
+        add(new ResponseBuilder()
+                .code("400")
+                .description("无效请求")
+                .examples(Collections
+                        .singletonList(badRequestExample))
+                .build());
+        add(new ResponseBuilder()
+                .code("401")
+                .description("请求未授权")
+                .examples(Collections
+                        .singletonList(unAuthorizeExample))
+                .build());
+        add(new ResponseBuilder()
+                .code("500")
+                .description("服务器异常")
+                .examples(Collections
+                        .singletonList(sysErrorExample))
+                .build());
     }};
 
     @Bean
@@ -39,9 +65,17 @@ public class SwaggerConfig {
                 .enable(true)
                 .apiInfo(apiInfo())
                 .globalResponses(HttpMethod.GET, responses)
+                .globalResponses(HttpMethod.POST, responses)
+                .globalResponses(HttpMethod.PUT, responses)
+                .globalResponses(HttpMethod.DELETE, responses)
+                .globalRequestParameters(Collections
+                        .singletonList(new RequestParameterBuilder()
+                                .name("_csrf")
+                                .build()))
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.melbsoft.teacherplatform"))
+                .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
+
 
                 .build();
     }
