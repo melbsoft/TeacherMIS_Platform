@@ -1,4 +1,4 @@
-package com.melbsoft.teacherplatform.sys.common.config;
+package com.melbsoft.teacherplatform.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;

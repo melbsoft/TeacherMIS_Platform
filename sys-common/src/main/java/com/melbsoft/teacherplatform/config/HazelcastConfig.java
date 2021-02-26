@@ -1,10 +1,8 @@
 package com.melbsoft.teacherplatform.config;
 
-import com.hazelcast.cache.HazelcastCacheManager;
 import com.hazelcast.config.*;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
