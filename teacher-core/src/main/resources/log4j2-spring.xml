@@ -2,6 +2,7 @@
 <Configuration>
     <Properties>
         <Property name="LOG_PATTERN">%style{%d{yyyy-MM-dd HH:mm:ss.SSS}}{gray} %highlight{%-5p }%style{%c{1.}}{bright,yellow} %m%n%throwable</Property>
+        <Property name="TRACE_PATTERN">%style{%d{yyyy-MM-dd HH:mm:ss.SSS}}{gray} %m%n</Property>
         <Property name="APP_NAME">teacher-platform</Property>
         <Property name="ROOT_DIR">logs</Property>
     </Properties>
@@ -11,7 +12,8 @@
         </Console>
         <RollingRandomAccessFile name="RollingFileInfo"
                                  fileName="${ROOT_DIR}/${APP_NAME}-info.log"
-                                 filePattern="${ROOT_DIR}/$${date:yyyy-MM}/${APP_NAME}-%d{yyyy-MM-dd}-%i.gz">
+                                 filePattern="${ROOT_DIR}/$${date:yyyy-MM}/${APP_NAME}-%d{yyyy-MM-dd}-info-%i.gz">
+            <NoMarkerFilter onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout charset="UTF-8" pattern="${LOG_PATTERN}"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
@@ -24,6 +26,18 @@
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingRandomAccessFile>
+
+
+        <RollingRandomAccessFile name="RollingFileTrace"
+                                 fileName="${ROOT_DIR}/${APP_NAME}-trace.log"
+                                 filePattern="${ROOT_DIR}/$${date:yyyy-MM}/${APP_NAME}-%d{yyyy-MM-dd}-trace-%i.gz">
+            <MarkerFilter marker="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout charset="UTF-8" pattern="${TRACE_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="256 MB"/>
+            </Policies>
+        </RollingRandomAccessFile>
     </Appenders>
 
     <Loggers>
@@ -32,14 +46,17 @@
         </Root>
         <Logger name="org.springframework" additivity="false">
             <AppenderRef ref="RollingFileInfo"/>
+            <AppenderRef ref="RollingFileTrace"/>
             <AppenderRef ref="Console"/>
         </Logger>
         <Logger name="org.mybatis" additivity="false">
             <AppenderRef ref="RollingFileInfo"/>
+            <AppenderRef ref="RollingFileTrace"/>
             <AppenderRef ref="Console"/>
         </Logger>
         <Logger name="com.melbsoft.teacherplatform" additivity="false">
             <AppenderRef ref="RollingFileInfo"/>
+            <AppenderRef ref="RollingFileTrace"/>
             <AppenderRef ref="Console"/>
         </Logger>
     </Loggers>

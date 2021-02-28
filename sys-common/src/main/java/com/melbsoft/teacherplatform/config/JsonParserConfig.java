@@ -15,7 +15,6 @@ public class JsonParserConfig {
     @Bean
     public ObjectMapper jsonMapper() {
         ObjectMapper jsonMapper = Jackson2ObjectMapperBuilder.json().build();
-        jsonMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         jsonMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         jsonMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         jsonMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
