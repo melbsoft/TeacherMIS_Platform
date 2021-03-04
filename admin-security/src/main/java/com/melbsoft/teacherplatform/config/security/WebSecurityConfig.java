@@ -156,7 +156,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://example.com"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new
                 UrlBasedCorsConfigurationSource();
@@ -173,4 +174,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     Argon2PasswordEncoder securityPasswordEncoder() {
         return new Argon2PasswordEncoder();
     }
+
 }
