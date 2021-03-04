@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melbsoft.teacherplatform.dao.admin.OperationLogMapper">
+
+    <insert id="save" parameterType="OperationLog">
+        INSERT INTO operation_log
+        (
+        operation_name,
+        operation_time,
+        operator,
+        target,
+        result
+        )
+        VALUES(
+        #{log.operationName},
+        #{log.operationTime},
+        #{log.operator},
+        #{log.target},
+        #{log.result}
+        )
+    </insert>
+
+    <select id="search" resultType="OperationLog">
+        SELECT
+        operation_id as operationId,
+        operation_name as operationName,
+        operation_time as operationTime,
+        operator,
+        target,
+        result
+        FROM operation_log
+        <where>
+            <if test="null!=q.operationName">
+                AND operation_name like #{q.operationName}"%"
+            </if>
+            <if test="null!=q.startTime">
+                AND operation_time &gt;= #{q.startTime}
+            </if>
+            <if test="null!=q.endTime">
+                AND operation_time &lt;= #{q.endTime}
+            </if>
+            <if test="null!=q.operator">
+                AND operator like #{q.operator}"%"
+            </if>
+            <if test="null!=q.target">
+                AND target like #{q.target}"%"
+            </if>
+        </where>
+        order by operation_time desc
+    </select>
+</mapper>

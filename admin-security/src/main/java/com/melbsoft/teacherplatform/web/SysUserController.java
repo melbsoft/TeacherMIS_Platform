@@ -1,6 +1,8 @@
 package com.melbsoft.teacherplatform.web;
 
+import com.melbsoft.teacherplatform.component.OpLog;
 import com.melbsoft.teacherplatform.service.admin.SysUserService;
+import com.melbsoft.teacherplatform.tools.OpLogHelper;
 import com.melbsoft.teacherplatform.web.basic.ResultMessage;
 import io.swagger.annotations.Api;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,6 +24,7 @@ public class SysUserController {
     @Resource
     SysUserService sysUserService;
 
+
     @Operation(summary = "用户信息查询",
             description = "获取当前登录用户信息",
             responses = {
@@ -36,6 +39,7 @@ public class SysUserController {
     }
 
 
+    @OpLog(value = "创建用户", target = "loginName+' '+userDisplay +' '+message")
     @Operation(summary = "创建新用户",
             description = "基于用户名与默认密码创建新用户",
             responses = {
@@ -43,7 +47,6 @@ public class SysUserController {
                             content = {@Content(mediaType = "application/json")}
                     )
             })
-
     @PostMapping("/create")
     ResultMessage<Void> create(
             @Parameter(name = "登录名", example = "admin")
@@ -54,6 +57,7 @@ public class SysUserController {
                     String userDisplay) {
         boolean success = sysUserService.create(loginName, userDisplay);
         if (success) {
+            OpLogHelper.put("message", "abc");
             return ResultMessage.SUCCESS;
         } else {
             return ResultMessage.fail("user exists!");
