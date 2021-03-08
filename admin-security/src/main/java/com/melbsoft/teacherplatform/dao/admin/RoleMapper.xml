@@ -14,4 +14,16 @@
             ua.role_id=r.role_id AND
             ua.user_id=#{userID}
     </select>
+    <select id="listRolesByUserName" resultType="SysRole">
+        SELECT
+            r.role_id as roleId,
+            r.role_name as roleName,
+            r.role_display as roleDisplay
+        FROM
+            sys_ua ua,sys_role r,sys_user u
+        WHERE
+            u.user_id=ua.user_id AND
+            ua.role_id=r.role_id AND
+            u.login_name=#{username}
+    </select>
 </mapper>

@@ -23,6 +23,7 @@ import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -122,6 +123,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                             authorize
                                     .antMatchers("/swagger-ui/**").permitAll()
                                     .antMatchers("/token").permitAll()
+                                    .antMatchers("/favicon.ico").permitAll()
+                                    .antMatchers("/v3/api-docs/**").permitAll()
                                     .anyRequest().authenticated();
                         }
                 )
@@ -174,5 +177,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     Argon2PasswordEncoder securityPasswordEncoder() {
         return new Argon2PasswordEncoder();
     }
+
 
 }

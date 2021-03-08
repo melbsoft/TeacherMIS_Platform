@@ -3,7 +3,7 @@
 <mapper namespace="com.melbsoft.teacherplatform.dao.admin.PermissionMapper">
 
 
-    <select id="findPermissions" resultType="Integer">
+    <select id="countPermissions" resultType="Integer">
         SELECT
         count(*)
         FROM
@@ -15,7 +15,70 @@
         <foreach item="item" index="index" collection="resources"
                  open="(" separator="," close=")">
             #{item}
-        </foreach> AND
+        </foreach>
+        AND
         P.privilege=#{permission}
+    </select>
+
+    <resultMap id="SysPermissionMap" type="SysPermission">
+        <id property="permissionId" column="permission_id"/>
+        <result property="permissionDisplay" column="permission_display"/>
+        <result property="resourceTypeDisplay" column="resource_type_display"/>
+        <result property="resourceNameDisplay" column="resource_name_display"/>
+        <result property="privilege" column="privilege"/>
+        <collection property="roles" ofType="SysRole">
+            <id property="roleId" column="role_id"/>
+            <result property="roleName" column="role_name"/>
+            <result property="roleDisplay" column="role_display"/>
+        </collection>
+    </resultMap>
+
+    <select id="search" resultMap="SysPermissionMap">
+        SELECT
+        p.permission_id,
+        p.permission_display,
+        r.resource_type_display,
+        r.resource_name_display,
+        p.privilege,
+        ro.role_id,
+        ro.role_name,
+        ro.role_display
+        FROM
+        sys_permission p,sys_resource r,sys_role ro,sys_rp rp
+        <where>
+            p.resource_id=r.resource_id AND
+            p.permission_id=rp.permission_id AND
+            rp.role_id=ro.role_id
+            <if test="null!=q.permissionDisplay">
+                AND permission_display like #{q.permissionDisplay}"%"
+            </if>
+
+        </where>
+        order by p.create_time DESC
+    </select>
+
+    <select id="listMenu" resultType="SysMenu">
+        SELECT
+        rp.id as rpId,
+        r.resource_name as menuName,
+        r.resource_name_display as menuDisplay
+        FROM
+        sys_permission p,
+        sys_resource r,
+        sys_role ro,
+        sys_rp rp
+        <where>
+            p.resource_id=r.resource_id AND
+            p.permission_id=rp.permission_id AND
+            p.privilege=#{privilege} AND
+            rp.role_id=ro.role_id
+            <if test="null!=roles">
+                AND ro.role_id in
+                <foreach item="item" index="index" collection="roles"
+                         open="(" separator="," close=")">
+                    #{item.roleId}
+                </foreach>
+            </if>
+        </where>
     </select>
 </mapper>

@@ -6,7 +6,6 @@ import lombok.Data;
 public class ResultMessage<T> {
 
     public static final ResultMessage SUCCESS = new ResultMessage("00000", "ok");
-    public static final ResultMessage FAIL = new ResultMessage("10000", "fail");
     public static final ResultMessage ERROR = new ResultMessage("00010", "SYSTEM ERROR");
     public static final ResultMessage FORBIDDEN = new ResultMessage("00003", "FORBIDDEN");
     public static final ResultMessage UN_AUTH = new ResultMessage("00002", "UNAUTHORIZED");
@@ -31,7 +30,7 @@ public class ResultMessage<T> {
         return new ResultMessage(SUCCESS.code, SUCCESS.message, data);
     }
 
-    public static ResultMessage fail(String message) {
-        return new ResultMessage(FAIL.code, message);
+    public static ResultMessage forbidden(String message) {
+        return new ResultMessage(FORBIDDEN.code, message);
     }
 }

@@ -68,6 +68,6 @@ public class RBACPermissionEvaluator implements PermissionEvaluator {
     public Boolean hasPermission(GrantedAuthority auth, List<Integer> ids, String permission) {
         log.info("{} {} {} {}", auth, ids, permission);
         SysRole r = (SysRole) auth;
-        return (permissionMapper.findPermissions(r.getRoleId(), ids, permission) > 0L);
+        return (permissionMapper.countPermissions(r.getRoleId(), ids, permission) > 0L);
     }
 }

@@ -88,7 +88,7 @@ public class ExceptionAdvice {
     @ResponseBody
     public ResultMessage sysErrorHandler(WebRequest request, ForbiddenException e) {
         logger.error("message process error! {} ", request, e);
-        return ResultMessage.FORBIDDEN;
+        return ResultMessage.forbidden(e.getMessage());
     }
 
     @ExceptionHandler(Throwable.class)

@@ -39,8 +39,8 @@ public class DBConfig {
         SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
         factoryBean.setDataSource(datasourceDB());
         factoryBean.setVfs(SpringBootVFS.class);
-        factoryBean.setTypeAliasesPackage("com.melbsoft.teacherplatform.model");
-        factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:**/dao/*Mapper.xml"));
+        factoryBean.setTypeAliasesPackage("com.melbsoft.teacherplatform.model.**");
+        factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:com/melbsoft/teacherplatform/dao/**/*Mapper.xml"));
         return factoryBean.getObject();
     }
 }

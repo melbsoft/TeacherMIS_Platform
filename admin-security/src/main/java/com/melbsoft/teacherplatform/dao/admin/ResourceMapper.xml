@@ -21,4 +21,82 @@
             r.resource_id=#{resourceID} AND
             r.parent_id !=0
     </select>
+
+
+    <select id="search" resultType="SysOrganization">
+        SELECT
+        s.resource_id as organizationId,
+        s.resource_name as organizationName,
+        s.resource_name_display as organizationDisplay,
+        p.resource_name_display as parentDisplay,
+        s.sequence_num as sequenceNum
+        FROM
+        sys_resource s,sys_resource p
+        <where>
+            s.parent_id=p.resource_id AND
+            s.resource_type='org'
+            <if test="!q.showRoot">
+                AND s.resource_id !=0
+            </if>
+            <if test="null!=q.organizationName">
+                AND s.resource_name like #{q.organizationName}"%"
+            </if>
+            <if test="null!=q.organizationDisplay">
+                AND s.resource_name_display like #{q.organizationDisplay}"%"
+            </if>
+        </where>
+        order by s.parent_id,s.sequence_num
+    </select>
+
+
+    <insert id="create" parameterType="SysOrganizationCreate">
+        INSERT IGNORE INTO sys_resource
+        (
+        resource_name,
+        resource_name_display,
+        resource_type,
+        resource_type_display,
+        parent_id,
+        sequence_num
+        )
+        VALUES (
+        #{info.organizationName},
+        #{info.organizationDisplay},
+        'org',
+        '组织机构',
+        #{info.parentOrganizationId},
+        #{info.sequenceNum}
+        );
+    </insert>
+
+    <update id="update" parameterType="SysOrganizationUpdate">
+        UPDATE sys_resource
+        <set>
+            <if test="null!=info.organizationName">
+                resource_name=#{info.organizationName},
+            </if>
+            <if test="null!=info.organizationDisplay">
+                resource_name_display=#{info.organizationDisplay},
+            </if>
+            <if test="null!=info.parentOrganizationId">
+                parent_id=#{info.parentOrganizationId},
+            </if>
+            <if test="null!=info.sequenceNum">
+                sequence_num=#{info.sequenceNum}
+            </if>
+        </set>
+        WHERE
+        resource_id=#{info.organizationId}
+    </update>
+
+    <select id="countSubOrg" parameterType="long" resultType="int">
+        select count(*)
+        from sys_resource
+        where parent_id=#{organizationId}
+    </select>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM sys_resource
+        WHERE resource_id=#{organizationId}
+    </delete>
 </mapper>
