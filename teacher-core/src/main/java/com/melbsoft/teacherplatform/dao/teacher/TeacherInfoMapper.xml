@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.melbsoft.teacherplatform.dao.teacher.TeacherInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.melbsoft.teacherplatform.model.teacher.TeacherInfo">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="teacher_name" property="teacherName" jdbcType="VARCHAR"/>
+        <result column="passport_no" property="passportNo" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="nation_id" property="nationId" jdbcType="INTEGER"/>
+        <result column="teacher_type" property="teacherType" jdbcType="VARCHAR"/>
+        <result column="college_id" property="collegeId" jdbcType="INTEGER"/>
+        <result column="employ_type" property="employType" jdbcType="VARCHAR"/>
+        <result column="employ_year" property="employYear" jdbcType="VARCHAR"/>
+        <result column="employ_remark" property="employRemark" jdbcType="VARCHAR"/>
+        <result column="teacher_source" property="teacherSource" jdbcType="VARCHAR"/>
+        <result column="approval_status" property="approvalStatus" jdbcType="INTEGER"/>
+        <result column="usable_status" property="teacherName" jdbcType="INTEGER"/>
+        <result column="create_time" property="teacherName" jdbcType="TIMESTAMP"/>
+        <result column="operate_time" property="teacherName" jdbcType="TIMESTAMP"/>
+        <result column="operate_id" property="teacherName" jdbcType="INTEGER"/>
+
+
+    </resultMap>
+
+    <select id="list" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+            id,
+            teacher_name,
+            passport_no,
+            sex,
+            nation_id,
+            teacher_type,
+            college_id,
+            employ_type,
+            employ_year,
+            employ_remark,
+            teacher_source,
+            approval_status,
+            usable_status,
+            create_time,
+            operate_time,
+            operator_id
+        FROM
+            teacher_info
+        <where>
+            <if test="null!=q.teacherName">
+                AND teacher_name like concat("%",#{teacherName},"%")
+            </if>
+            <if test="null!=q.nationId">
+                AND nation_id = #{q.nationId}
+            </if>
+            <if test="null!=q.teacherType">
+                AND teacher_type = #{q.teacherType}
+            </if>
+            <if test="null!=q.employType">
+                AND employ_type = #{q.employType}
+            </if>
+            <if test="null!=q.approvalStatus">
+                AND approval_status = #{q.approvalStatus}
+            </if>
+            <if test="null!=q.passportNo">
+                AND passport_no = #{passportNo}
+            </if>
+            <if test="null!=q.employRemark">
+                AND employRemark like concat("%",#{q.approvalStatus},"%")
+            </if>
+            <if test="null!=q.employYear">
+                AND employ_year like concat("%",#{q.employYear},"%")
+            </if>
+            <if test="null!=q.teacherSource">
+                AND teacher_source like concat("%",#{q.teacherSource},"%")
+            </if>
+        </where>
+        order by operate_time desc
+    </select>
+
+</mapper>
