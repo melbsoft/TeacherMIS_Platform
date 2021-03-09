@@ -1,6 +1,7 @@
 package com.melbsoft.teacherplatform.dao.admin;
 
 import com.melbsoft.teacherplatform.model.admin.SysOrganization;
+import com.melbsoft.teacherplatform.model.admin.SysResource;
 import com.melbsoft.teacherplatform.model.admin.vo.SysOrganizationCreate;
 import com.melbsoft.teacherplatform.model.admin.vo.SysOrganizationQuery;
 import com.melbsoft.teacherplatform.model.admin.vo.SysOrganizationUpdate;
@@ -25,5 +26,5 @@ public interface ResourceMapper {
 
     int delete(@Param("organizationId") Long organizationId);
 
-
+    List<SysResource> listResourceByParentId(@Param("parentId") Long parentId);
 }

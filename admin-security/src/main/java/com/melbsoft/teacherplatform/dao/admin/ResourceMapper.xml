@@ -99,4 +99,20 @@
         DELETE FROM sys_resource
         WHERE resource_id=#{organizationId}
     </delete>
+
+    <select id="listResourceByParentId" resultType="SysResource">
+        SELECT
+        r.resource_id as resourceId,
+        r.resource_type as resourceType,
+        r.resource_name as resourceName,
+        r.resource_type_display as resourceTypeDisplay,
+        r.resource_name_display as resourceNameDisplay,
+        r.parent_id as parentId,
+        r.sequence_num as sequenceNum
+        FROM
+        sys_resource r
+        WHERE
+        r.parent_id = #{parentId}
+        order by parent_id,sequence_num
+    </select>
 </mapper>

@@ -33,8 +33,7 @@ public class OrganizationController {
     @Operation(summary = "查询组织结构列表",
             description = "支持基于不同条件过滤列表",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "操作成功"
-                    )
+                    @ApiResponse(responseCode = "200", description = "操作成功" )
             })
     @GetMapping("/_search")
     ResultMessage<PageInfo<List<SysOrganization>>> search(@Valid @ParameterObject SysOrganizationQuery query) {

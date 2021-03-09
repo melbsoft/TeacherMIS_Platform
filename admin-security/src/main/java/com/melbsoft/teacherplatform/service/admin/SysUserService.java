@@ -2,8 +2,9 @@ package com.melbsoft.teacherplatform.service.admin;
 
 import com.melbsoft.teacherplatform.dao.admin.RoleMapper;
 import com.melbsoft.teacherplatform.dao.admin.UserMapper;
-import com.melbsoft.teacherplatform.model.admin.SysMenu;
+import com.melbsoft.teacherplatform.model.admin.SysResource;
 import com.melbsoft.teacherplatform.model.admin.SysRole;
+import com.melbsoft.teacherplatform.model.admin.vo.UserPermissionQuery;
 import com.melbsoft.teacherplatform.tools.SecurityHelper;
 import com.melbsoft.teacherplatform.web.exception.ForbiddenException;
 import com.melbsoft.teacherplatform.web.exception.InvalidInputException;
@@ -57,9 +58,16 @@ public class SysUserService {
         }
     }
 
-    public List<SysMenu> listMenu() {
+
+    public List<SysResource> listPermission(UserPermissionQuery permissionQuery) {
         String userName = SecurityHelper.getUserDetails().getUsername();
         List<SysRole> roles = roleMapper.listRolesByUserName(userName);
-       return permissionService.listMenu(roles, "view");
+        return permissionService.listPermission(roles, permissionQuery);
     }
+
+    public List<SysResource> listResource(Long parentId) {
+        return permissionService.listResource(parentId);
+    }
+
+
 }

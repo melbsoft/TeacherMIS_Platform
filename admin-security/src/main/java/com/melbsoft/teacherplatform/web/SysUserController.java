@@ -1,7 +1,8 @@
 package com.melbsoft.teacherplatform.web;
 
 import com.melbsoft.teacherplatform.component.OpLog;
-import com.melbsoft.teacherplatform.model.admin.SysMenu;
+import com.melbsoft.teacherplatform.model.admin.SysResource;
+import com.melbsoft.teacherplatform.model.admin.vo.UserPermissionQuery;
 import com.melbsoft.teacherplatform.service.admin.SysUserService;
 import com.melbsoft.teacherplatform.web.basic.ResultMessage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,11 +10,13 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
+import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 
@@ -39,18 +42,16 @@ public class SysUserController {
         return ResultMessage.success(userInfo);
     }
 
-    @Operation(summary = "查询用户菜单",
-            description = "基于用户登录信息授权获取对应菜单",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "操作成功"
-                    )
-            })
-    @GetMapping("/menu")
-    ResultMessage<List<SysMenu>> menu() {
-        List<SysMenu> menuList = sysUserService.listMenu();
-        return ResultMessage.success(menuList);
-    }
 
+    @Operation(summary = "查询用户授权",
+            description = "基于不同类别查询用户授权列表",
+            responses = {@ApiResponse(responseCode = "200", description = "操作成功")}
+    )
+    @GetMapping("/permission")
+    ResultMessage<List<SysResource>> permission(@Valid @ParameterObject UserPermissionQuery query) {
+        List<SysResource> resources = sysUserService.listPermission(query);
+        return ResultMessage.success(resources);
+    }
 
     @OpLog(value = "创建用户", target = "loginName+' '+userDisplay +' '+message")
     @Operation(summary = "创建新用户",

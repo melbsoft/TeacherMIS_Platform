@@ -1,9 +1,10 @@
 package com.melbsoft.teacherplatform.dao.admin;
 
-import com.melbsoft.teacherplatform.model.admin.SysMenu;
 import com.melbsoft.teacherplatform.model.admin.SysPermission;
+import com.melbsoft.teacherplatform.model.admin.SysResource;
 import com.melbsoft.teacherplatform.model.admin.SysRole;
 import com.melbsoft.teacherplatform.model.admin.vo.SysPermissionQuery;
+import com.melbsoft.teacherplatform.model.admin.vo.UserPermissionQuery;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,5 +17,7 @@ public interface PermissionMapper {
 
     List<SysPermission> search(@Param("q") SysPermissionQuery query);
 
-    List<SysMenu> listMenu(@Param("roles") List<SysRole> roles, @Param("privilege") String privilege);
+    List<SysResource> listPermission(@Param("roles") List<SysRole> roles, @Param("q") UserPermissionQuery permissionQuery);
+
+
 }
