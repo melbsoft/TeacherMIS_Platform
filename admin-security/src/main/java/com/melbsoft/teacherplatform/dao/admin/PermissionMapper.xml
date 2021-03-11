@@ -61,48 +61,13 @@
     </select>
 
 
-    <resultMap id="SysResourceMap" type="SysResource">
-        <id property="resourceId" column="resource_id"/>
-        <result property="resourceType" column="resource_type"/>
-        <result property="resourceName" column="resource_name"/>
-        <result property="resourceTypeDisplay" column="resource_type_display"/>
-        <result property="resourceNameDisplay" column="resource_name_display"/>
-        <result property="parentId" column="parent_id"/>
-        <result property="sequenceNum" column="sequence_num"/>
-        <result property="parentId" column="parent_id"/>
-
-        <collection property="subResource" ofType="SysResource">
-            <id property="resourceId" column="resource_id_sub"/>
-            <result property="resourceType" column="resource_type_sub"/>
-            <result property="resourceName" column="resource_name_sub"/>
-            <result property="resourceTypeDisplay" column="resource_type_display_sub"/>
-            <result property="resourceNameDisplay" column="resource_name_display_sub"/>
-            <result property="parentId" column="parent_id_sub"/>
-            <result property="sequenceNum" column="sequence_num_sub"/>
-        </collection>
-    </resultMap>
-    <select id="listPermission" resultMap="SysResourceMap">
+    <select id="listPermission" resultType="long">
         SELECT
-        r.resource_id,
-        r.resource_type,
-        r.resource_name,
-        r.resource_type_display,
-        r.resource_name_display,
-        r.parent_id,
-        r.sequence_num,
-
-        r2.resource_id as resource_id_sub,
-        r2.resource_type as resource_type_sub,
-        r2.resource_name as resource_name_sub,
-        r2.resource_type_display as resource_type_display_sub,
-        r2.resource_name_display as resource_name_display_sub,
-        r2.parent_id as parent_id_sub,
-        r2.sequence_num as sequence_num_sub
+        r.resource_id as resourceId
         FROM
         sys_resource r
         INNER JOIN sys_permission p ON p.resource_id = r.resource_id
         INNER JOIN sys_rp rp ON p.permission_id = rp.permission_id
-        LEFT JOIN sys_resource r2 ON r.resource_id = r2.parent_id
         <where>
             <if test="null!=roles">
                 AND rp.role_id in

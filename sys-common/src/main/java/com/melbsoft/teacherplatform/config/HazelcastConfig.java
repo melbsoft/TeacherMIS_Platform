@@ -27,10 +27,10 @@ public class HazelcastConfig {
                 .addMapIndexConfig(new MapIndexConfig(HazelcastIndexedSessionRepository.PRINCIPAL_NAME_ATTRIBUTE, false));
         config.addMapConfig(
                 new MapConfig()
-                        .setName("instruments")
+                        .setName("static")
                         .setMaxSizeConfig(new MaxSizeConfig(384, MaxSizeConfig.MaxSizePolicy.FREE_HEAP_SIZE))
                         .setEvictionPolicy(EvictionPolicy.LRU)
-                        .setTimeToLiveSeconds(20000));
+                        .setTimeToLiveSeconds(60));
         return Hazelcast.newHazelcastInstance(config);
     }
 

@@ -27,4 +27,6 @@ public interface ResourceMapper {
     int delete(@Param("organizationId") Long organizationId);
 
     List<SysResource> listResourceByParentId(@Param("parentId") Long parentId);
+
+    SysResource listResourceById(@Param("resourceId")Long resourceId);
 }

@@ -3,10 +3,11 @@ package com.melbsoft.teacherplatform.model.admin;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
-public class SysResource {
+public class SysResource implements Serializable {
     @Schema(description = "资源ID", example = "1")
     Long resourceId;
 
@@ -28,7 +29,7 @@ public class SysResource {
     @Schema(description = "资源序号", example = "1")
     Long sequenceNum;
 
-    List<SysResource> subResource;
+    transient List<SysResource> subResource;
 
 
 }

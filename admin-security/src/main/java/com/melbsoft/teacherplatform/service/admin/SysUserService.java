@@ -65,9 +65,5 @@ public class SysUserService {
         return permissionService.listPermission(roles, permissionQuery);
     }
 
-    public List<SysResource> listResource(Long parentId) {
-        return permissionService.listResource(parentId);
-    }
-
 
 }

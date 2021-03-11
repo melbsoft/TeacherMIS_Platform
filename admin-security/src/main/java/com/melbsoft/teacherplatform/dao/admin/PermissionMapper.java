@@ -17,7 +17,7 @@ public interface PermissionMapper {
 
     List<SysPermission> search(@Param("q") SysPermissionQuery query);
 
-    List<SysResource> listPermission(@Param("roles") List<SysRole> roles, @Param("q") UserPermissionQuery permissionQuery);
+    List<Long> listPermission(@Param("roles") List<SysRole> roles, @Param("q") UserPermissionQuery permissionQuery);
 
 
 }
