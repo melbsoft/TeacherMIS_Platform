@@ -129,4 +129,19 @@
         WHERE
         r.resource_id = #{resourceId}
     </select>
+
+    <select id="searchByResourceName" resultType="SysResource">
+        SELECT
+            resource_id,
+            resource_name,
+            resource_name_display,
+            resource_type,
+            resource_type_display,
+            parent_id,
+            current_level
+        FROM
+            sys_resource r
+        WHERE
+            r.resource_type=#{resourceType}
+    </select>
 </mapper>

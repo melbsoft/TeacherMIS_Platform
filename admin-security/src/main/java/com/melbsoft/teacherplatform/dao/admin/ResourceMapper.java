@@ -29,4 +29,6 @@ public interface ResourceMapper {
     List<SysResource> listResourceByParentId(@Param("parentId") Long parentId);
 
     SysResource listResourceById(@Param("resourceId")Long resourceId);
+
+    List<SysResource> searchByResourceName(@Param("resourceType") String resourceType);
 }

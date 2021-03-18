@@ -1,7 +1,9 @@
 package com.melbsoft.teacherplatform.service.admin;
 
+import com.google.common.collect.Lists;
 import com.melbsoft.teacherplatform.dao.admin.ResourceMapper;
 import com.melbsoft.teacherplatform.model.admin.SysResource;
+import com.melbsoft.teacherplatform.model.admin.dto.SysResourceDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -27,5 +29,11 @@ public class ResourceService {
     public SysResource findResouce(Long id) {
         log.info("load resource from db id={}", id);
         return resourceMapper.listResourceById(id);
+    }
+
+    public List<SysResource> searchByResourceTypeAndName(String resourceType){
+        log.info("load resource from db resourceName");
+        List<SysResource> sysResourceList = resourceMapper.searchByResourceName(resourceType);
+        return sysResourceList;
     }
 }
