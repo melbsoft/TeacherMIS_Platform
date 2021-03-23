@@ -163,6 +163,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080","http://47.92.240.50:8080"));
+
         configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.setAllowedOrigins(Collections.singletonList("*"));
         configuration.setAllowedMethods(Collections.singletonList("*"));
