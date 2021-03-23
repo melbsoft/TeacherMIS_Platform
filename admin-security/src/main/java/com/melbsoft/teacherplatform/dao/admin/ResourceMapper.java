@@ -14,11 +14,12 @@ import java.util.List;
 
 @Mapper
 public interface ResourceMapper {
+
     Integer findResourceID(@Param("resourceName") String resourceName, @Param("resourceType") String resourceType);
 
     Integer findParentId(@Param("resourceID") Integer id);
 
-    List<SysOrganization> search(@Param("q") SysOrganizationQuery query);
+    List<SysOrganization> searchOrg(@Param("q") SysOrganizationQuery query);
 
     int create(@Param("info") SysOrganizationCreate info);
 
@@ -33,7 +34,6 @@ public interface ResourceMapper {
     SysResource listResourceById(@Param("resourceId") Long resourceId);
 
     List<SysDict> searchDict(@Param("q") DictQuery query);
-    SysResource listResourceById(@Param("resourceId")Long resourceId);
 
     List<SysResource> searchByResourceName(@Param("resourceType") String resourceType);
 }
