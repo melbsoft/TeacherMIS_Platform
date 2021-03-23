@@ -2,6 +2,7 @@ package com.melbsoft.teacherplatform.config.security;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.melbsoft.teacherplatform.dao.admin.RoleMapper;
 import com.melbsoft.teacherplatform.service.admin.RBACUserDetailsService;
 import com.melbsoft.teacherplatform.web.basic.ResultMessage;
@@ -32,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
 @EnableWebSecurity
 @Slf4j
@@ -63,7 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors().and()
+                .cors().disable()
                 .csrf(csrf -> {
                             csrf.ignoringAntMatchers("/token")
                                     .csrfTokenRepository(
@@ -157,15 +159,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
         return tokenRepository;
     }
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
-        configuration.addAllowedMethod("*");
-        UrlBasedCorsConfigurationSource source = new
-                UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+//    @Bean
+//    CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowCredentials(true);
+//        configuration.setAllowedHeaders(Collections.singletonList("*"));
+//        configuration.setAllowedMethods(Collections.singletonList("*"));
+//        configuration.addAllowedHeader("*");
+//        configuration.addAllowedMethod("*");
+//        UrlBasedCorsConfigurationSource source = new
+//                UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 
     @Bean
     public RBACUserDetailsService rbacUserDetailsService() {
