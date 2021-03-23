@@ -18,13 +18,13 @@ public interface ResourceMapper {
 
     Integer findParentId(@Param("resourceID") Integer id);
 
-    List<SysOrganization> searchOrg(@Param("q") SysOrganizationQuery query);
+    List<SysOrganization> search(@Param("q") SysOrganizationQuery query);
 
     int create(@Param("info") SysOrganizationCreate info);
 
     int update(@Param("info") SysOrganizationUpdate info);
 
-    int countSubOrg(@Param("organizationId") Long organizationId);
+    int countSubOrg(@Param("organizationId")Long organizationId);
 
     int delete(@Param("organizationId") Long organizationId);
 
@@ -33,4 +33,7 @@ public interface ResourceMapper {
     SysResource listResourceById(@Param("resourceId") Long resourceId);
 
     List<SysDict> searchDict(@Param("q") DictQuery query);
+    SysResource listResourceById(@Param("resourceId")Long resourceId);
+
+    List<SysResource> searchByResourceName(@Param("resourceType") String resourceType);
 }

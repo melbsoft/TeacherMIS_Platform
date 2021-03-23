@@ -49,8 +49,6 @@
     </select>
 
 
-
-
     <insert id="create" parameterType="SysOrganizationCreate">
         INSERT IGNORE INTO sys_resource
         (
@@ -117,7 +115,6 @@
         r.parent_id = #{parentId}
         order by parent_id,sequence_num
     </select>
-
     <select id="listResourceById" resultType="SysResource">
         SELECT
         r.resource_id as resourceId,
@@ -150,5 +147,20 @@
             s.resource_id !=0
         </where>
         order by s.parent_id,s.sequence_num
+    </select>
+
+    <select id="searchByResourceName" resultType="SysResource">
+        SELECT
+            r.resource_id as resourceId,
+            r.resource_type as resourceType,
+            r.resource_name as resourceName,
+            r.resource_type_display as resourceTypeDisplay,
+            r.resource_name_display as resourceNameDisplay,
+            r.parent_id as parentId,
+            r.sequence_num as sequenceNum
+        FROM
+            sys_resource r
+        WHERE
+            r.resource_type=#{resourceType}
     </select>
 </mapper>
