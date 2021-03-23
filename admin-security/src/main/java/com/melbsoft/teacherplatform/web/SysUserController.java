@@ -4,6 +4,7 @@ import com.melbsoft.teacherplatform.component.OpLog;
 import com.melbsoft.teacherplatform.model.admin.SysResource;
 import com.melbsoft.teacherplatform.model.admin.vo.UserPermissionQuery;
 import com.melbsoft.teacherplatform.service.admin.SysUserService;
+import com.melbsoft.teacherplatform.tools.OpLogHelper;
 import com.melbsoft.teacherplatform.web.basic.ResultMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -60,7 +61,6 @@ public class SysUserController {
             responses = {@ApiResponse(responseCode = "200", description = "操作成功")}
     )
     @PostMapping("/create")
-
     @ResponseStatus(HttpStatus.CREATED)
     ResultMessage<Void> create(
             @Parameter(description = "登录名", example = "admin")
