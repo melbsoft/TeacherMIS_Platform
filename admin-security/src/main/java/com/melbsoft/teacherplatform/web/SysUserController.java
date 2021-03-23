@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
 import org.springdoc.api.annotations.ParameterObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -59,6 +60,8 @@ public class SysUserController {
             responses = {@ApiResponse(responseCode = "200", description = "操作成功")}
     )
     @PostMapping("/create")
+
+    @ResponseStatus(HttpStatus.CREATED)
     ResultMessage<Void> create(
             @Parameter(description = "登录名", example = "admin")
             @RequestParam("loginName")

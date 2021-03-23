@@ -22,7 +22,7 @@ public class OrgangizationService {
 
     public PageInfo<List<SysOrganization>> search(SysOrganizationQuery query) {
         PageHelper.startPage(query.getPage(), DEFAULT_PAGE_SIZE);
-        PageInfo<List<SysOrganization>> pagedOrganizations = new PageInfo(resourceMapper.search(query));
+        PageInfo<List<SysOrganization>> pagedOrganizations = new PageInfo(resourceMapper.searchOrg(query));
         return pagedOrganizations;
     }
 

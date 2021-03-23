@@ -10,7 +10,7 @@ public class App {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext app = SpringApplication.run(App.class, args);
-
+        app.registerShutdownHook();
     }
 
 
