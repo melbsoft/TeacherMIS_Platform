@@ -2,7 +2,6 @@ package com.melbsoft.teacherplatform.config.security;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import com.melbsoft.teacherplatform.dao.admin.RoleMapper;
 import com.melbsoft.teacherplatform.service.admin.RBACUserDetailsService;
 import com.melbsoft.teacherplatform.web.basic.ResultMessage;
@@ -24,7 +23,6 @@ import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -33,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 
 @EnableWebSecurity
 @Slf4j
@@ -163,11 +160,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080","http://47.92.240.50:8080"));
+        configuration.setAllowedOrigins(
+                Arrays.asList("http://localhost:8080",
+                        "http://47.92.240.50:8080"));
+        configuration.addAllowedMethod(HttpMethod.GET);
+        configuration.addAllowedMethod(HttpMethod.POST);
+        configuration.addAllowedMethod(HttpMethod.PUT);
+        configuration.addAllowedMethod(HttpMethod.DELETE);
+        configuration.addAllowedMethod(HttpMethod.HEAD);
+        configuration.addAllowedMethod(HttpMethod.OPTIONS);
 
-        configuration.setAllowedHeaders(Collections.singletonList("*"));
-        configuration.setAllowedOrigins(Collections.singletonList("*"));
-        configuration.setAllowedMethods(Collections.singletonList("*"));
         UrlBasedCorsConfigurationSource source = new
                 UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
