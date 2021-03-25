@@ -3,19 +3,28 @@ package com.melbsoft.teacherplatform.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.melbsoft.teacherplatform.dao.admin.RoleMapper;
+import com.melbsoft.teacherplatform.dao.admin.UserMapper;
 import com.melbsoft.teacherplatform.service.admin.RBACUserDetailsService;
+import com.melbsoft.teacherplatform.service.admin.SysUserService;
 import com.melbsoft.teacherplatform.web.basic.ResultMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.support.BaseLdapPathContextSource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -31,27 +40,43 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 @EnableWebSecurity
 @Slf4j
+@Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements InitializingBean {
 
     public static final int TOKEN_VALIDITY_SECONDS = 3600 * 24 * 15;
+    public static final long DEFAULT_ROLE_ID = 6L;
+    private String UNAUTH_RESP = "";
+
     @Resource
     BaseLdapPathContextSource contextSource;
     @Resource
+    String dnPattern;
+
+
+    @Resource
     DataSource datasourceAdmin;
-    private String UNAUTH_RESP = "";
+    @Resource
+    SysUserService sysUserService;
+    @Value("${ldap.switch}")
+    boolean ldapReady;
+
+
     @Resource
     private ObjectMapper objectMapper;
     @Resource
     private RoleMapper roleMapper;
+    @Resource
+    private UserMapper userMapper;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         UNAUTH_RESP = objectMapper.writeValueAsString(ResultMessage.UN_AUTH);
     }
-
 
     private void unAuthorizeResponse(HttpServletResponse resp) throws IOException {
         resp.setContentType("application/json;charset=UTF-8");
@@ -146,6 +171,38 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
         auth
                 .userDetailsService(rbacUserDetailsService())
                 .passwordEncoder(securityPasswordEncoder());
+        if (ldapReady) {
+            auth
+                    .ldapAuthentication()
+                    .contextSource(contextSource)
+                    .userDnPatterns(dnPattern)
+                    .passwordCompare()
+                    .passwordEncoder(createEncoder())
+                    .passwordAttribute("userPassword")
+                    .and()
+                    .ldapAuthoritiesPopulator(new LdapAuthoritiesPopulator() {
+
+                        @Override
+                        public Collection<? extends GrantedAuthority> getGrantedAuthorities(DirContextOperations userData, String username) {
+                            int rows = userMapper.insertUser(username, "ldap", userData.getStringAttribute("cn"));
+                            if (rows == 1) {
+                                roleMapper.insertRole(DEFAULT_ROLE_ID, username);
+                            }
+                            return roleMapper.listRolesByUserName(username);
+                        }
+                    });
+        }
+    }
+
+    private PasswordEncoder createEncoder() {
+        return new DelegatingPasswordEncoder("WMD5", Collections.singletonMap("WMD5", new org.springframework.security.crypto.password.MessageDigestPasswordEncoder("MD5")));
+    }
+
+
+    @Bean
+    String dnPattern(@Value("${ldap.dn.pattern}")
+                             String dnPattern) {
+        return dnPattern;
     }
 
     @Bean
