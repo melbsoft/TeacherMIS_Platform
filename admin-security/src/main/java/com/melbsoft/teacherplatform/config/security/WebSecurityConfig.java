@@ -8,6 +8,8 @@ import com.melbsoft.teacherplatform.service.admin.RBACUserDetailsService;
 import com.melbsoft.teacherplatform.service.admin.SysUserService;
 import com.melbsoft.teacherplatform.web.basic.ResultMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.jasig.cas.client.session.SingleSignOutFilter;
+import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +18,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.support.BaseLdapPathContextSource;
+import org.springframework.security.cas.ServiceProperties;
+import org.springframework.security.cas.authentication.CasAuthenticationProvider;
+import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
+import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,6 +31,8 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -50,28 +58,35 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
 
     public static final int TOKEN_VALIDITY_SECONDS = 3600 * 24 * 15;
     public static final long DEFAULT_ROLE_ID = 6L;
-    private String UNAUTH_RESP = "";
-
     @Resource
     BaseLdapPathContextSource contextSource;
     @Resource
     String dnPattern;
-
-
     @Resource
     DataSource datasourceAdmin;
     @Resource
     SysUserService sysUserService;
     @Value("${ldap.switch}")
     boolean ldapReady;
-
-
+    private String UNAUTH_RESP = "";
     @Resource
     private ObjectMapper objectMapper;
     @Resource
     private RoleMapper roleMapper;
     @Resource
     private UserMapper userMapper;
+    @Value("${cas.server.host.url}")
+    private String casServerUrl;
+    @Value("${cas.server.host.login_url}")
+    private String casServerLoginUrl;
+    @Value("${cas.server.host.logout_url}")
+    private String casServerLogoutUrl;
+    @Value("${cas.app.server.host.url}")
+    private String appServerUrl;
+    @Value("${cas.app.login.url}")
+    private String appLoginUrl;
+    @Value("${cas.app.logout.url}")
+    private String appLogoutUrl;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -164,6 +179,89 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                     });
                 })
                 .httpBasic();
+
+        http.exceptionHandling().authenticationEntryPoint(casAuthenticationEntryPoint())
+                .and()
+                .addFilter(casAuthenticationFilter())
+                .addFilterBefore(casLogoutFilter(), LogoutFilter.class)
+                .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class);
+    }
+
+    @Bean
+    public CasAuthenticationEntryPoint casAuthenticationEntryPoint() {
+        CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
+        //Cas Server的登录地址
+        casAuthenticationEntryPoint.setLoginUrl(casServerLoginUrl);
+        //service相关的属性
+        casAuthenticationEntryPoint.setServiceProperties(serviceProperties());
+        return casAuthenticationEntryPoint;
+    }
+
+
+    /**
+     * 指定service相关信息
+     * 设置客户端service的属性
+     * 主要设置请求cas服务端后的回调路径,一般为主页地址，不可为登录地址
+     *
+     * @return
+     */
+    @Bean
+    public ServiceProperties serviceProperties() {
+        ServiceProperties serviceProperties = new ServiceProperties();
+        serviceProperties.setService(appServerUrl + appLoginUrl);
+        serviceProperties.setAuthenticateAllArtifacts(true);
+        return serviceProperties;
+    }
+
+    @Bean
+    public CasAuthenticationFilter casAuthenticationFilter() throws Exception {
+        CasAuthenticationFilter casAuthenticationFilter = new CasAuthenticationFilter();
+        casAuthenticationFilter.setAuthenticationManager(authenticationManager());
+        casAuthenticationFilter.setFilterProcessesUrl(appLoginUrl);
+        return casAuthenticationFilter;
+    }
+
+
+    @Bean
+    public CasAuthenticationProvider casAuthenticationProvider() {
+        CasAuthenticationProvider casAuthenticationProvider = new CasAuthenticationProvider();
+        casAuthenticationProvider.setServiceProperties(serviceProperties());
+        casAuthenticationProvider.setAuthenticationUserDetailsService(new CasUserDetailService());
+        casAuthenticationProvider.setTicketValidator(cas20ServiceTicketValidator());
+        casAuthenticationProvider.setKey("casAuthenticationProviderKey");
+        return casAuthenticationProvider;
+    }
+
+
+    /**
+     * 配置Ticket校验器
+     *
+     * @return
+     */
+    @Bean
+    public Cas20ServiceTicketValidator cas20ServiceTicketValidator() {
+        // 配置上服务端的校验ticket地址
+        return new Cas20ServiceTicketValidator(casServerUrl);
+    }
+
+
+    @Bean
+    public SingleSignOutFilter singleSignOutFilter() {
+        SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
+        singleSignOutFilter.setIgnoreInitConfiguration(true);
+        return singleSignOutFilter;
+    }
+
+    /**
+     * 单点请求CAS客户端退出Filter类
+     * 请求/logout，转发至CAS服务端进行注销
+     */
+    @Bean
+    public LogoutFilter casLogoutFilter() {
+        // 设置回调地址，以免注销后页面不再跳转
+        LogoutFilter logoutFilter = new LogoutFilter(casServerLogoutUrl, new SecurityContextLogoutHandler());
+        logoutFilter.setFilterProcessesUrl(appLogoutUrl);
+        return logoutFilter;
     }
 
     @Override
@@ -171,6 +269,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
         auth
                 .userDetailsService(rbacUserDetailsService())
                 .passwordEncoder(securityPasswordEncoder());
+
         if (ldapReady) {
             auth
                     .ldapAuthentication()

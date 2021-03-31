@@ -12,6 +12,7 @@ import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -30,5 +31,4 @@ public class DictController {
         PageInfo<List<SysDict>> plist = dictService.search(query);
         return ResultMessage.success(plist);
     }
-
 }
