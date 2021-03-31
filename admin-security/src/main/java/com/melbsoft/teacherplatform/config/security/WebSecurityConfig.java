@@ -182,11 +182,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                 })
                 .httpBasic();
 
-        http.exceptionHandling().authenticationEntryPoint(casAuthenticationEntryPoint())
-                .and()
-                .addFilter(casAuthenticationFilter())
-                .addFilterBefore(casLogoutFilter(), LogoutFilter.class)
-                .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class);
+//        http.exceptionHandling().authenticationEntryPoint(casAuthenticationEntryPoint())
+//                .and()
+//                .addFilter(casAuthenticationFilter())
+//                .addFilterBefore(casLogoutFilter(), LogoutFilter.class)
+//                .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class);
     }
 
     @Bean
@@ -268,7 +268,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .authenticationProvider(casAuthenticationProvider())
+//                .authenticationProvider(casAuthenticationProvider())
 
                 .userDetailsService(rbacUserDetailsService())
                 .passwordEncoder(securityPasswordEncoder());
