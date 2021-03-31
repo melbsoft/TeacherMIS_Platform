@@ -4,7 +4,6 @@ package com.melbsoft.teacherplatform.config.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.melbsoft.teacherplatform.dao.admin.RoleMapper;
 import com.melbsoft.teacherplatform.dao.admin.UserMapper;
-import com.melbsoft.teacherplatform.service.admin.RBACUserDetailsService;
 import com.melbsoft.teacherplatform.service.admin.SysUserService;
 import com.melbsoft.teacherplatform.web.basic.ResultMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.support.BaseLdapPathContextSource;
 import org.springframework.security.cas.ServiceProperties;
+import org.springframework.security.cas.authentication.CasAssertionAuthenticationToken;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
@@ -27,6 +27,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -182,11 +183,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                 })
                 .httpBasic();
 
-//        http.exceptionHandling().authenticationEntryPoint(casAuthenticationEntryPoint())
-//                .and()
-//                .addFilter(casAuthenticationFilter())
-//                .addFilterBefore(casLogoutFilter(), LogoutFilter.class)
-//                .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class);
+        http.exceptionHandling().authenticationEntryPoint(casAuthenticationEntryPoint())
+                .and()
+                .addFilter(casAuthenticationFilter())
+                .addFilterBefore(casLogoutFilter(), LogoutFilter.class)
+                .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class);
     }
 
     @Bean
@@ -227,10 +228,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     public CasAuthenticationProvider casAuthenticationProvider() {
         CasAuthenticationProvider casAuthenticationProvider = new CasAuthenticationProvider();
         casAuthenticationProvider.setServiceProperties(serviceProperties());
-        casAuthenticationProvider.setAuthenticationUserDetailsService(new CasUserDetailService());
+        casAuthenticationProvider.setAuthenticationUserDetailsService(casUserService());
         casAuthenticationProvider.setTicketValidator(cas20ServiceTicketValidator());
         casAuthenticationProvider.setKey("casAuthenticationProviderKey");
         return casAuthenticationProvider;
+    }
+
+    @Bean
+    public AuthenticationUserDetailsService<CasAssertionAuthenticationToken> casUserService() {
+        return new CasUserDetailService();
     }
 
 
@@ -268,7 +274,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-//                .authenticationProvider(casAuthenticationProvider())
+                .authenticationProvider(casAuthenticationProvider())
 
                 .userDetailsService(rbacUserDetailsService())
                 .passwordEncoder(securityPasswordEncoder());
