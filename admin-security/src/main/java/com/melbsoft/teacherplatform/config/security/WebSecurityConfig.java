@@ -164,6 +164,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                                     .antMatchers("/token").permitAll()
                                     .antMatchers("/favicon.ico").permitAll()
                                     .antMatchers("/v3/api-docs/**").permitAll()
+                                    .antMatchers("/caslogin").permitAll()
+                                    .antMatchers("/caslogout").permitAll()
                                     .anyRequest().authenticated();
                         }
                 )
@@ -192,7 +194,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
         CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
         //Cas Server的登录地址
         casAuthenticationEntryPoint.setLoginUrl(casServerLoginUrl);
-        //service相关的属性
         casAuthenticationEntryPoint.setServiceProperties(serviceProperties());
         return casAuthenticationEntryPoint;
     }
@@ -267,6 +268,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
+                .authenticationProvider(casAuthenticationProvider())
+
                 .userDetailsService(rbacUserDetailsService())
                 .passwordEncoder(securityPasswordEncoder());
 
