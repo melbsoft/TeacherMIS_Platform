@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/")
 @Tags(@Tag(name = "系统登录功能"))
@@ -27,6 +30,11 @@ public class LoginController {
     @GetMapping("/token")
     ResultMessage token() {
         return ResultMessage.SUCCESS;
+    }
+
+    @GetMapping("/caslogin")
+    void token(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/main.html");
     }
 
 

@@ -68,7 +68,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     @Resource
     SysUserService sysUserService;
     @Value("${ldap.switch}")
-    boolean ldapReady;
+    boolean ldapSupport;
+    @Value("${cas.switch}")
+    boolean casSupport;
+
     private String UNAUTH_RESP = "";
     @Resource
     private ObjectMapper objectMapper;
@@ -103,6 +106,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+
                 .cors().and()
                 .csrf(csrf -> {
                             csrf.ignoringAntMatchers("/token")
@@ -182,31 +186,35 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                     });
                 })
                 .httpBasic();
-
-        http.exceptionHandling().authenticationEntryPoint(casAuthenticationEntryPoint())
-                .and()
-                .addFilter(casAuthenticationFilter())
-                .addFilterBefore(casLogoutFilter(), LogoutFilter.class)
-                .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class);
+        if (casSupport) {
+            http
+//                    .exceptionHandling()
+//                    .authenticationEntryPoint(casAuthenticationEntryPoint())
+//                    .and()
+                    .addFilter(casAuthenticationFilter())
+                    .addFilterBefore(casLogoutFilter(), LogoutFilter.class)
+                    .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class);
+        }
     }
 
     @Bean
     public CasAuthenticationEntryPoint casAuthenticationEntryPoint() {
         CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
-        //Cas Server的登录地址
         casAuthenticationEntryPoint.setLoginUrl(casServerLoginUrl);
         casAuthenticationEntryPoint.setServiceProperties(serviceProperties());
         return casAuthenticationEntryPoint;
     }
 
+    @Bean
+    public CasAuthenticationProvider casAuthenticationProvider() {
+        CasAuthenticationProvider casAuthenticationProvider = new CasAuthenticationProvider();
+        casAuthenticationProvider.setServiceProperties(serviceProperties());
+        casAuthenticationProvider.setAuthenticationUserDetailsService(casUserService());
+        casAuthenticationProvider.setTicketValidator(cas20ServiceTicketValidator());
+        casAuthenticationProvider.setKey("casAuthenticationProviderKey");
+        return casAuthenticationProvider;
+    }
 
-    /**
-     * 指定service相关信息
-     * 设置客户端service的属性
-     * 主要设置请求cas服务端后的回调路径,一般为主页地址，不可为登录地址
-     *
-     * @return
-     */
     @Bean
     public ServiceProperties serviceProperties() {
         ServiceProperties serviceProperties = new ServiceProperties();
@@ -223,31 +231,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
         return casAuthenticationFilter;
     }
 
-
-    @Bean
-    public CasAuthenticationProvider casAuthenticationProvider() {
-        CasAuthenticationProvider casAuthenticationProvider = new CasAuthenticationProvider();
-        casAuthenticationProvider.setServiceProperties(serviceProperties());
-        casAuthenticationProvider.setAuthenticationUserDetailsService(casUserService());
-        casAuthenticationProvider.setTicketValidator(cas20ServiceTicketValidator());
-        casAuthenticationProvider.setKey("casAuthenticationProviderKey");
-        return casAuthenticationProvider;
-    }
-
     @Bean
     public AuthenticationUserDetailsService<CasAssertionAuthenticationToken> casUserService() {
         return new CasUserDetailService();
     }
 
-
-    /**
-     * 配置Ticket校验器
-     *
-     * @return
-     */
     @Bean
     public Cas20ServiceTicketValidator cas20ServiceTicketValidator() {
-        // 配置上服务端的校验ticket地址
         return new Cas20ServiceTicketValidator(casServerUrl);
     }
 
@@ -259,13 +249,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
         return singleSignOutFilter;
     }
 
-    /**
-     * 单点请求CAS客户端退出Filter类
-     * 请求/logout，转发至CAS服务端进行注销
-     */
     @Bean
     public LogoutFilter casLogoutFilter() {
-        // 设置回调地址，以免注销后页面不再跳转
         LogoutFilter logoutFilter = new LogoutFilter(casServerLogoutUrl, new SecurityContextLogoutHandler());
         logoutFilter.setFilterProcessesUrl(appLogoutUrl);
         return logoutFilter;
@@ -274,12 +259,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .authenticationProvider(casAuthenticationProvider())
-
                 .userDetailsService(rbacUserDetailsService())
                 .passwordEncoder(securityPasswordEncoder());
 
-        if (ldapReady) {
+        if (ldapSupport) {
             auth
                     .ldapAuthentication()
                     .contextSource(contextSource)
@@ -299,6 +282,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
                             return roleMapper.listRolesByUserName(username);
                         }
                     });
+        }
+
+        if (casSupport) {
+            auth.authenticationProvider(casAuthenticationProvider());
         }
     }
 
