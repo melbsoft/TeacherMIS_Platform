@@ -13,6 +13,7 @@ public class UserPermissionQuery {
     String resourceType;
 
     @Parameter(description = "权限类型", example = "view")
+    @NotNull
     String privilege;
 
 

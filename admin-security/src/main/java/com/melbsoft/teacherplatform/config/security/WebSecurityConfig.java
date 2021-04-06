@@ -197,13 +197,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements I
         }
     }
 
-    @Bean
-    public CasAuthenticationEntryPoint casAuthenticationEntryPoint() {
-        CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
-        casAuthenticationEntryPoint.setLoginUrl(casServerLoginUrl);
-        casAuthenticationEntryPoint.setServiceProperties(serviceProperties());
-        return casAuthenticationEntryPoint;
-    }
+//    @Bean
+//    public CasAuthenticationEntryPoint casAuthenticationEntryPoint() {
+//        CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
+//        casAuthenticationEntryPoint.setLoginUrl(casServerLoginUrl);
+//        casAuthenticationEntryPoint.setServiceProperties(serviceProperties());
+//        return casAuthenticationEntryPoint;
+//    }
 
     @Bean
     public CasAuthenticationProvider casAuthenticationProvider() {
