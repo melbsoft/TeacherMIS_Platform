@@ -38,5 +38,15 @@ public class TeacherInfoVO {
 
     private Integer operatorId;
 
+    /**
+     * 0:允许编辑 1：禁止编辑
+     */
+    private Integer enableEdit;
+
+    /**
+     * 0:可见 1：不可见
+     */
+    private Integer enableView;
+
     int page = 1;
 }

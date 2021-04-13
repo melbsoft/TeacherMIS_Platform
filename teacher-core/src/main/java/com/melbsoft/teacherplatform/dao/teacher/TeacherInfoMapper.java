@@ -15,7 +15,7 @@ public interface TeacherInfoMapper {
      * @param teacherInfo
      * @return
      */
-    int save(TeacherInfo teacherInfo);
+    int insertTeacher(TeacherInfo teacherInfo);
 
     /**
      * 查询教师信息列表

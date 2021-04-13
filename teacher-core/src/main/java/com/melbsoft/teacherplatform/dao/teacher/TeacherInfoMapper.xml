@@ -75,4 +75,24 @@
         order by operate_time desc
     </select>
 
+    <insert id="insertTeacher">
+        INSERT IGNORE INTO
+            teacher_info
+                        (teacher_name,
+                        passport_no,
+                        sex,
+                        nation_id,
+                        teacher_type,
+                        college_id,
+                        employ_type,
+                        employ_year,
+                        employ_remark,
+teacher_source,approval_status,usable_status,create_time,operate_time,operate_id
+                        )
+         VALUES (#{teacherName},#{passportNo},#{sex},
+        #{nationId},#{teacherType},#{collegeId},#{employType},#{employYear},
+        #{employRemark},#{teacherSource},#{approvalStatus},#{usableStatus},#{creatTime},
+        teacherName)
+    </insert>
+
 </mapper>

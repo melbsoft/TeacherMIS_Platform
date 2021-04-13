@@ -4,6 +4,7 @@ import com.melbsoft.teacherplatform.dao.admin.RoleMapper;
 import com.melbsoft.teacherplatform.dao.admin.UserMapper;
 import com.melbsoft.teacherplatform.model.admin.SysResource;
 import com.melbsoft.teacherplatform.model.admin.SysRole;
+import com.melbsoft.teacherplatform.model.admin.SysUser;
 import com.melbsoft.teacherplatform.model.admin.vo.UserPermissionQuery;
 import com.melbsoft.teacherplatform.tools.SecurityHelper;
 import com.melbsoft.teacherplatform.web.exception.ForbiddenException;
@@ -64,6 +65,11 @@ public class SysUserService {
         List<SysRole> roles = roleMapper.listRolesByUserName(userName);
         return permissionService.listPermission(roles, permissionQuery);
     }
+
+    public SysUser findUser(String userName){
+        return userMapper.findUser(userName);
+    }
+
 
 
 }

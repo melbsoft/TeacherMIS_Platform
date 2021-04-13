@@ -53,4 +53,16 @@ public class TeacherInfoService {
         PageInfo<List<TeacherInfoDto>> result = new PageInfo(teacherInfoDtoList);
         return result;
     }
+
+    /**
+     *
+     * @param loginName
+     * @param userDisplay
+     */
+    public void create(TeacherInfo teacherInfo) {
+        int rows = teacherInfoMapper.insertTeacher(teacherInfo);
+        if (rows != 1) {
+            throw new ForbiddenException("duplicate user found!");
+        }
+    }
 }
