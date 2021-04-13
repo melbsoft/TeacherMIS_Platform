@@ -7,11 +7,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-@RestController
+import java.io.IOException;
+
+@Controller
 @RequestMapping("/")
 @Tags(@Tag(name = "系统登录功能"))
 public class LoginController {
@@ -25,8 +28,14 @@ public class LoginController {
                     })
             })
     @GetMapping("/token")
+    @ResponseBody
     ResultMessage token() {
         return ResultMessage.SUCCESS;
+    }
+
+    @GetMapping("/caslogin")
+    String caslogin() throws IOException {
+        return "redirect:/main";
     }
 
 

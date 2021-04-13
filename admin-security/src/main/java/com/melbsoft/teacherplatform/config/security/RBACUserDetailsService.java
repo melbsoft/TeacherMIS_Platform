@@ -1,4 +1,4 @@
-package com.melbsoft.teacherplatform.service.admin;
+package com.melbsoft.teacherplatform.config.security;
 
 import com.melbsoft.teacherplatform.dao.admin.RoleMapper;
 import com.melbsoft.teacherplatform.dao.admin.UserMapper;

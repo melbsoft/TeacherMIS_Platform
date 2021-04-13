@@ -26,4 +26,12 @@
             ua.role_id=r.role_id AND
             u.login_name=#{username}
     </select>
+
+    <insert id="insertRole">
+        INSERT INTO sys_ua
+        (role_id,user_id)
+        SELECT #{roleId},user_id
+        FROM sys_user
+        WHERE login_name=#{username}
+    </insert>
 </mapper>

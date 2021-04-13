@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springdoc.api.annotations.ParameterObject;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 public class SysOrganizationQuery {
 
@@ -16,6 +18,7 @@ public class SysOrganizationQuery {
 
     @Parameter(description = "分页页码", example = "1")
     int page = 1;
+
 
     @Parameter(description = "是否展示根节点", example = "true")
     boolean showRoot = false;

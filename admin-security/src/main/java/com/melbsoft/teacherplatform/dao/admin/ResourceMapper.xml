@@ -23,7 +23,7 @@
     </select>
 
 
-    <select id="search" resultType="SysOrganization">
+    <select id="searchOrg" resultType="SysOrganization">
         SELECT
         s.resource_id as organizationId,
         s.resource_name as organizationName,
@@ -128,6 +128,25 @@
         sys_resource r
         WHERE
         r.resource_id = #{resourceId}
+    </select>
+
+
+
+    <select id="searchDict" resultType="SysDict">
+        SELECT
+        s.resource_id as dictId,
+        s.resource_name as dictName,
+        s.resource_name_display as dictDisplay,
+        p.resource_name_display as parentDisplay,
+        s.sequence_num as sequenceNum
+        FROM
+        sys_resource s,sys_resource p
+        <where>
+            s.parent_id=p.resource_id AND
+            s.resource_type=#{q.dictType} AND
+            s.resource_id !=0
+        </where>
+        order by s.parent_id,s.sequence_num
     </select>
 
     <select id="searchByResourceName" resultType="SysResource">

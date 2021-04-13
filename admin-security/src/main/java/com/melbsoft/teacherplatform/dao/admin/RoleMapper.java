@@ -12,4 +12,6 @@ public interface RoleMapper {
     List<SysRole> listRolesByUserID(@Param("userID") long userID);
 
     List<SysRole> listRolesByUserName(@Param("username") String username);
+
+    int insertRole(@Param("roleId") long roleId,@Param("username") String username);
 }

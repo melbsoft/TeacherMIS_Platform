@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class SysOrganization {
 
-    @Schema(description = "组织机ID", example = "1")
+    @Schema(description = "组织机构ID", example = "1")
     Long organizationId;
     @Schema(description = "组织机构名", example = "economics_trade_s")
     String organizationName;
@@ -14,6 +14,6 @@ public class SysOrganization {
     String organizationDisplay;
     @Schema(description = "父级组织展示名称", example = "安徽师范大学")
     String parentDisplay;
-    @Schema(description = "组织机构序号", example = "1")
+    @Schema(description = "展示序号", example = "1")
     int sequenceNum;
 }

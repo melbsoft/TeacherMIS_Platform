@@ -55,7 +55,24 @@
             <if test="null!=q.permissionDisplay">
                 AND permission_display like #{q.permissionDisplay}"%"
             </if>
-
+            <if test="null!=q.resourceType">
+                AND r.resource_type = #{q.resourceType}
+            </if>
+            <if test="null!=q.resourceTypeDisplay">
+                AND r.resource_type_display = #{q.resourceTypeDisplay}
+            </if>
+            <if test="null!=q.resourceType">
+                AND r.resource_type = #{q.resourceType}
+            </if>
+            <if test="null!=q.resourceName">
+                AND r.resource_name = #{q.resourceName}
+            </if>
+            <if test="null!=q.resourceNameDisplay">
+                AND r.resource_name_display = #{q.resourceNameDisplay}
+            </if>
+            <if test="null!=q.privilege">
+                AND p.privilege = #{q.privilege}
+            </if>
         </where>
         order by p.create_time DESC
     </select>
